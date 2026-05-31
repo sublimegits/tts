@@ -37,6 +37,7 @@
             toolStripSeparator1 = new ToolStripSeparator();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
+            toolStripDropDownButton2 = new ToolStripDropDownButton();
             tableLayoutPanel1.SuspendLayout();
             toolStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
@@ -47,6 +48,7 @@
             textBox1.Location = new Point(3, 3);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
+            textBox1.PlaceholderText = "Input your speech here.";
             textBox1.Size = new Size(174, 235);
             textBox1.TabIndex = 0;
             textBox1.TextChanged += textBox1_TextChanged;
@@ -81,7 +83,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripSeparator1 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripSeparator1, toolStripDropDownButton2 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(384, 25);
@@ -121,6 +123,15 @@
             toolStripStatusLabel1.Text = "Everything's fine right now";
             toolStripStatusLabel1.Click += toolStripStatusLabel1_Click;
             // 
+            // toolStripDropDownButton2
+            // 
+            toolStripDropDownButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownButton2.Image = (Image)resources.GetObject("toolStripDropDownButton2.Image");
+            toolStripDropDownButton2.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButton2.Name = "toolStripDropDownButton2";
+            toolStripDropDownButton2.Size = new Size(92, 22);
+            toolStripDropDownButton2.Text = "Change Voice";
+            // 
             // Form1
             // 
             AcceptButton = SpeakButton;
@@ -157,5 +168,6 @@
         private ToolStripSeparator toolStripSeparator1;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripDropDownButton toolStripDropDownButton2;
     }
 }

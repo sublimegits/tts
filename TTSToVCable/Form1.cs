@@ -10,6 +10,8 @@ namespace TTSToVCable
     {
         private SpeechSynthesizer synth = new();
         private AudioDevice? selectedDevice;
+        private VoiceS? selectedVoice;
+
         public Form1()
         {
             InitializeComponent();
@@ -17,14 +19,29 @@ namespace TTSToVCable
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Enumerate all output devices and add to dropdown
+            selectedVoice = new(synth.GetInstalledVoices()[0].VoiceInfo, synth.GetInstalledVoices()[0].VoiceInfo.Name);
+
             for (int i = 0; i < WaveOut.DeviceCount; i++)
             {
                 var capabilities = WaveOut.GetCapabilities(i);
                 AudioDevice audiodevice = new(i, capabilities.ProductName);
                 toolStripDropDownButton1.DropDownItems.Add(audiodevice.Name);
-                toolStripDropDownButton1.DropDownItems[i].Click += DeviceMenuItem_Click; // wired per item
+                toolStripDropDownButton1.DropDownItems[i].Click += DeviceMenuItem_Click;
                 toolStripDropDownButton1.DropDownItems[i].Tag = audiodevice;
+            }
+
+            if (toolStripDropDownButton1.DropDownItems.Count > 0)
+            {
+                ((ToolStripMenuItem)toolStripDropDownButton1.DropDownItems[0]).PerformClick();
+            }
+
+            for (int i = 0; i < synth.GetInstalledVoices().Count; i++)
+            {
+                var info = synth.GetInstalledVoices()[i].VoiceInfo;
+                VoiceS voice = new(info, info.Name);
+                toolStripDropDownButton2.DropDownItems.Add(voice.Name);
+                toolStripDropDownButton2.DropDownItems[i].Click += VoiceMenuItem_Click;
+                toolStripDropDownButton2.DropDownItems[i].Tag = voice;
             }
 
             if (toolStripDropDownButton1.DropDownItems.Count > 0)
@@ -39,6 +56,15 @@ namespace TTSToVCable
             {
                 selectedDevice = device;
                 toolStripDropDownButton1.Text = device.Name;
+            }
+        }
+
+        private void VoiceMenuItem_Click(object? sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem item && item.Tag is VoiceS voice)
+            {
+                selectedVoice = voice;
+                toolStripDropDownButton1.Text = voice.Name;
             }
         }
 
@@ -79,18 +105,16 @@ namespace TTSToVCable
             waveOut.Play();
         }
 
-        public class AudioDevice
+        public class AudioDevice(int index, string name)
         {
-            public int DeviceIndex { get; }
-            public string Name { get; }
-
-            public AudioDevice(int index, string name)
-            {
-                DeviceIndex = index;
-                Name = name;
-            }
+            public int DeviceIndex { get; } = index;
+            public string Name { get; } = name;
         }
-
+        public class VoiceS(VoiceInfo other, string name)
+        {
+            public VoiceInfo VoiceOther { get; set; } = other;
+            public string Name { get; set; } = name;
+        }
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
         {
 
