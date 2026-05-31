@@ -64,7 +64,7 @@ namespace TTSToVCable
             if (sender is ToolStripMenuItem item && item.Tag is VoiceS voice)
             {
                 selectedVoice = voice;
-                toolStripDropDownButton1.Text = voice.Name;
+                toolStripDropDownButton2.Text = voice.Name;
             }
         }
 
