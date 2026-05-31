@@ -19,7 +19,6 @@ namespace TTSToVCable
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            selectedVoice = new(synth.GetInstalledVoices()[0].VoiceInfo, synth.GetInstalledVoices()[0].VoiceInfo.Name);
 
             for (int i = 0; i < WaveOut.DeviceCount; i++)
             {
@@ -44,9 +43,9 @@ namespace TTSToVCable
                 toolStripDropDownButton2.DropDownItems[i].Tag = voice;
             }
 
-            if (toolStripDropDownButton1.DropDownItems.Count > 0)
+            if (toolStripDropDownButton2.DropDownItems.Count > 0)
             {
-                ((ToolStripMenuItem)toolStripDropDownButton1.DropDownItems[0]).PerformClick();
+                ((ToolStripMenuItem)toolStripDropDownButton2.DropDownItems[0]).PerformClick();
             }
         }
 
@@ -56,6 +55,7 @@ namespace TTSToVCable
             {
                 selectedDevice = device;
                 toolStripDropDownButton1.Text = device.Name;
+                toolStripStatusLabel1.Text = "Selected device";
             }
         }
 
@@ -65,6 +65,7 @@ namespace TTSToVCable
             {
                 selectedVoice = voice;
                 toolStripDropDownButton2.Text = voice.Name;
+                toolStripStatusLabel1.Text = "Selected voice";
             }
         }
 
@@ -91,18 +92,24 @@ namespace TTSToVCable
         private void SpeakButton_Click(object sender, EventArgs e)
         {
             if (selectedDevice == null) { toolStripStatusLabel1.Text = "Select an output first!"; return; }
+            if (selectedVoice == null) { toolStripStatusLabel1.Text = "Select a voice first!"; return; }
 
             synth.SetOutputToNull();
 
             var ms = new MemoryStream();
             synth.SetOutputToWaveStream(ms);
+            synth.SelectVoice(selectedVoice.Name);
             synth.Speak(textBox1.Text);
             ms.Position = 0;
 
-            var waveOut = new WaveOut();
-            waveOut.DeviceNumber = selectedDevice.DeviceIndex;
+            var waveOut = new WaveOut
+            {
+                DeviceNumber = selectedDevice.DeviceIndex
+            };
             waveOut.Init(new WaveFileReader(ms));
             waveOut.Play();
+
+            toolStripStatusLabel1.Text = "Talked succesfully";
         }
 
         public class AudioDevice(int index, string name)
