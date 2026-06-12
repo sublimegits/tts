@@ -1,4 +1,7 @@
+using NAudio.Gui;
 using NAudio.Wave;
+using NAudio.WinForms;
+using System;
 using System.Speech.Synthesis;
 using System.Windows.Forms;
 using static TTSToVCable.Form1;
@@ -15,6 +18,7 @@ namespace TTSToVCable
         public Form1()
         {
             InitializeComponent();
+            waveViewer1.SamplesPerPixel = 128;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -86,7 +90,7 @@ namespace TTSToVCable
 
         private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
-         
+
         }
 
         private void SpeakButton_Click(object sender, EventArgs e)
@@ -99,6 +103,8 @@ namespace TTSToVCable
             var ms = new MemoryStream();
             synth.SetOutputToWaveStream(ms);
             synth.SelectVoice(selectedVoice.Name);
+            synth.Volume = trackBar1.Value;
+            synth.Rate = trackBar2.Value;
             synth.Speak(textBox1.Text);
             ms.Position = 0;
 
@@ -106,9 +112,18 @@ namespace TTSToVCable
             {
                 DeviceNumber = selectedDevice.DeviceIndex
             };
-            waveOut.Init(new WaveFileReader(ms));
-            waveOut.Play();
+            var ws = new WaveFileReader(ms);
 
+            waveViewer1.StartPosition = 0;
+            waveViewer1.SamplesPerPixel = (int)((ws.Length / ws.BlockAlign) / waveViewer1.Width);
+            waveViewer1.WaveStream = ws;
+            waveViewer1.Refresh();
+
+            ws.Position = 0;
+
+            waveOut.Init(ws);
+            waveOut.Play();
+            
             toolStripStatusLabel1.Text = "Talked succesfully";
         }
 
@@ -130,6 +145,11 @@ namespace TTSToVCable
         private void toolStripDropDownButton2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void waveViewer1_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }
