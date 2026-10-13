@@ -146,9 +146,11 @@
             // trackBar1
             // 
             trackBar1.Location = new Point(15, 296);
+            trackBar1.Maximum = 100;
             trackBar1.Name = "trackBar1";
             trackBar1.Size = new Size(174, 45);
             trackBar1.TabIndex = 3;
+            trackBar1.TickFrequency = 10;
             // 
             // trackBar2
             // 
